@@ -1,0 +1,53 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id "org.beryx.jlink" version "2.16.4"
+}
+
+group 'de.mockbirds'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = '13'
+targetCompatibility = '13'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+jar {
+    enabled = true
+}
+
+javafx {
+    version = "13"
+    modules = ['javafx.controls', 'javafx.graphics']
+}
+
+jlink {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    launcher {
+        name = 'hellofx'
+    }
+    mergedModule {
+        additive = true
+        uses 'ch.qos.logback.classic.spi.Configurator'
+    }
+    jpackage {
+        imageName = 'HelloFX'
+        skipInstaller = true
+        installerName = 'HelloFX'
+        installerType = 'pkg'
+    }
+    forceMerge('log4j-api')
+}
+
+mainClassName = 'de.mockbirds.javafx/de.mockbirds.javafx.JavaFxSpringApp'
